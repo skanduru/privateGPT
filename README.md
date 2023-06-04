@@ -1,3 +1,47 @@
+private ChatGPT is a very powerful concept and can be very useful to create a personal 
+knowledgebase.  It can churn out information and answer any question, but the response was
+ very slow to be of any practical use. Maybe that is because it is purely python-based ?
+
+Thanks to the original author who created it.
+
+I added a pdf file and queried and got this response after 10 minutes ....
+
+Enter a query: Explain HybridAssetAllocation and its predecessor Bold Asset Allocation.
+Hopefully at some point the speed> Answer:
+ Here's an example of how you can create the HAACS function in Python using NumPy and Panda
+ny different ways depending on your specific requirements or personal preferences as a deve
+:```pythonimport pandas as pd  # for data manipulation (e.g., reading/writing csv) and savi
+split a column into multiple columns by default using pivot table modedef hybrid_asset(star
+        # define variables for dataframes (one per period) and labels/indexes of the assets
+(periods=(len("BDSKY")+9))  # ASKT, BSPT - one per period for BDSKY (except first)
+        # define variables to store the dataframes      df_list=[]```
+
+> source_documents/HybridAssetAllocation.pdf:
+Our new Hybrid Asset Allocation (HAA) is a follow-up on our Bold Asset Allocation (BAA). Us
+as our inspiration, we try to compose a much simpler strategy for retail investors. We aim
+balanced but aggressive strategy and much lower cash-fractions than BAA. An important role
+new strategy is reserved for our ‘canary’ approach for crash protection, but now combined w
+traditional dual momentum to arrive at our novel ‘hybrid’ approach. For HAA, we use a new s
+
+> source_documents/HybridAssetAllocation.pdf:
+Our Bold Asset Allocation (BAA) came in two variants: a balanced one (with Top6 out of a 12
+risky universe) and an aggressive one (with Top1 out of a 4-asset risky universe). Our new
+Asset Allocation (HAA) strategy aims at just one (balanced and aggressive) model with a Top
+8-asset risky universe, using a ‘hybrid’ combination of traditional dual momentum and a new
+
+> source_documents/HybridAssetAllocation.pdf:
+By the ‘hybrid’ combination of traditional dual momentum with a new canary asset TIP for cr
+protection, we are able to arrive at a very simple strategy called ‘Hybrid Asset Allocation
+which is much simpler than our complex BAA (Bold Asset Allocation) model.
+
+The recipe for this new HAA strategy is simple: on the close of the last trading day of eac
+
+> source_documents/HybridAssetAllocation.pdf:
+Keller, W.J., and A. Butler, 2015a, Elastic Asset Allocation (EAA), SSRN 2543979
+
+Keller, W.J., A. Butler, and I. Kipnis, 2015b, Momentum and Markowitz (CAA), SSRN 2606884
+ may improve so that we can put it for personal and career development to add richness in our lives.
+
 # privateGPT
 Ask questions to your documents without an internet connection, using the power of LLMs. 100% private, no data leaves your execution environment at any point. You can ingest documents and ask questions without an internet connection!
 

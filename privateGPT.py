@@ -7,6 +7,7 @@ from langchain.vectorstores import Chroma
 from langchain.llms import GPT4All, LlamaCpp
 import os
 import argparse
+import sys
 
 load_dotenv()
 
@@ -29,14 +30,34 @@ def main():
     # activate/deactivate the streaming StdOut callback for LLMs
     callbacks = [] if args.mute_stream else [StreamingStdOutCallbackHandler()]
     # Prepare the LLM
-    match model_type:
-        case "LlamaCpp":
-            llm = LlamaCpp(model_path=model_path, n_ctx=model_n_ctx, callbacks=callbacks, verbose=False)
-        case "GPT4All":
-            llm = GPT4All(model=model_path, n_ctx=model_n_ctx, backend='gptj', callbacks=callbacks, verbose=False)
-        case _default:
+    if sys.version_info.minor == 8:
+        # Define a dictionary mapping model types to functions that create the models.
+        model_types = {
+            "LlamaCpp": lambda: LlamaCpp(model_path=model_path, n_ctx=model_n_ctx, callbacks=callbacks, verbose=False),
+            "GPT4All": lambda: GPT4All(model=model_path, n_ctx=model_n_ctx, backend='gptj', callbacks=callbacks, verbose=False),
+        }
+        
+        # Try to get the function from the dictionary.
+        model_func = model_types.get(model_type)
+        
+        # If the function exists, call it to create the model. Otherwise, print an error and exit.
+        if model_func:
+            llm = model_func()
+        else:
             print(f"Model {model_type} not supported!")
-            exit;
+            exit()
+    else:
+        """
+        Uncomment when using 3.10
+        match model_type:
+            case "LlamaCpp":
+                llm = LlamaCpp(model_path=model_path, n_ctx=model_n_ctx, callbacks=callbacks, verbose=False)
+            case "GPT4All":
+                llm = GPT4All(model=model_path, n_ctx=model_n_ctx, backend='gptj', callbacks=callbacks, verbose=False)
+            case _default:
+                print(f"Model {model_type} not supported!")
+                exit;
+        """
     qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever, return_source_documents= not args.hide_source)
     # Interactive questions and answers
     while True:
