@@ -8,8 +8,45 @@ from langchain.llms import GPT4All, LlamaCpp
 import os
 import argparse
 import sys
+import threading
+import time
+import pdb
+
+sleep_interval = 1
 
 load_dotenv()
+
+from enum import Enum
+
+class appMode(Enum):
+    fastAPI = 1
+    standalone = 2
+
+myappmode = appMode.standalone
+hide_source = False
+
+class Job(threading.Thread):
+    def __init__(self, target, args = ()):
+        if args:
+            args = (self,) +  args
+        else:
+            args = ()
+
+        super(Job, self).__init__(target = target, args = args)
+        self.shutdown_flag = threading.Event()
+
+    def wait_until_qa_initialized(self):
+        while qa is None:
+            time.sleep(0.1)
+
+    def start(self):
+        super(Job, self).start()
+
+    def ok_to_run(self):
+        return not self.shutdown_flag.is_set()
+
+    def shutdown(self):
+        self.shutdown_flag.set()
 
 embeddings_model_name = os.environ.get("EMBEDDINGS_MODEL_NAME")
 persist_directory = os.environ.get('PERSIST_DIRECTORY')
@@ -21,9 +58,14 @@ target_source_chunks = int(os.environ.get('TARGET_SOURCE_CHUNKS',4))
 
 from constants import CHROMA_SETTINGS
 
-def main():
+qa = None
+
+def getQnA():
+    global qa
     # Parse the command line arguments
     args = parse_arguments()
+    hide_source = args.hide_source
+
     embeddings = HuggingFaceEmbeddings(model_name=embeddings_model_name)
     db = Chroma(persist_directory=persist_directory, embedding_function=embeddings, client_settings=CHROMA_SETTINGS)
     retriever = db.as_retriever(search_kwargs={"k": target_source_chunks})
@@ -59,6 +101,21 @@ def main():
                 exit;
         """
     qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever, return_source_documents= not args.hide_source)
+
+    # while True:
+    #    time.sleep(sleep_interval)
+
+
+def query_results(query: str):
+    # Wait until 'qa' is not None
+    while qa is None:
+        time.sleep(0.1)
+    # Get the answer from the chain
+    res = qa(query)
+    answer, docs = res['result'], [] if hide_source else res['source_documents']
+    return answer, docs
+
+def query_sync():
     # Interactive questions and answers
     while True:
         query = input("\nEnter a query: ")
@@ -67,7 +124,7 @@ def main():
 
         # Get the answer from the chain
         res = qa(query)
-        answer, docs = res['result'], [] if args.hide_source else res['source_documents']
+        answer, docs = res['result'], [] if hide_source else res['source_documents']
 
         # Print the result
         print("\n\n> Question:")
@@ -94,4 +151,7 @@ def parse_arguments():
 
 
 if __name__ == "__main__":
-    main()
+    agent = Job(target = getQnA, args = ())
+    agent.start()
+    if myappmode == appMode.standalone:
+        query_sync()
