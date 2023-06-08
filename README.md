@@ -118,7 +118,7 @@ Please note that the actual URL (`http://localhost:8000/`) and the request paylo
 
 ```bash
 gunicorn app:app -k uvicorn.workers.UvicornWorker --timeout 1500 &
-```
+
 
  INFO:     Started server process [3281469]
  INFO:     Waiting for application startup.
@@ -134,14 +134,14 @@ gunicorn app:app -k uvicorn.workers.UvicornWorker --timeout 1500 &
  File already exists.
  INFO:     Application startup complete.
  INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+```
 
 ```bash
   $ curl -X POST -F "files=@requirements.txt" -F "collection_name=my_collection" http://localhost:8000/embed
-```
 {"message":"Files embedded successfully\n","saved_files":["source_documents/requirements.txt"]}
+```
 
 ```bash
   curl -X POST -H "Content-Type: application/json" -d '{"query": "curl", "collection_name": "my_collection"}' http://localhost:8000/retrieve
-```
 {"Question":"curl","Answer":" If you don't know the answer to this question or if there is another way that can be considered easier and quicker than sending a request in Python, I would recommend using cURL instead.","Documents":{"source_documents/README.md":"Embed Route\n\nEndpoint: POST /embed\n\nDescription: Embed files by uploading them to the server.\n\nExample Usage:\n   bash\n   curl -X POST -F \"files=@file1.txt\" -F \"files=@file2.txt\" -F \"collection_name=my_collection\" http://localhost:8000/embed\n   ```python\n   import requests\n\nfiles = [(\"files\", open(\"file1.txt\", \"rb\")), (\"files\", open(\"file2.txt\", \"rb\"))]\n   data = {\"collection_name\": \"my_collection\"}"}}
-
+```
